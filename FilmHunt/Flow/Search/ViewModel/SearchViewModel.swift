@@ -37,18 +37,19 @@ final class SearchViewModel: ObservableObject {
 
 extension SearchViewModel {
     @MainActor
-    func fetchRecomendations() async {
+    func fetchRecommendations() async {
         state = .loading
         Task { [weak self] in
+            guard let self else { return }
             do {
                 var movies: [MovieModel] = []
                 for id in Constants.recommendations {
-                    let result = try await repository.fetchSearchResult(by: id)
+                    let result = try await self.repository.fetchSearchResult(by: id)
                     movies.append(movieModelFactory.createMovieModel(for: result))
                 }
-                self?.state = .loaded(movies)
+                self.state = .loaded(movies)
             } catch {
-                self?.state = .failed(error as? NetworkError ?? .unknown)
+                self.state = .failed(error as? NetworkError ?? .unknown)
             }
         }
     }

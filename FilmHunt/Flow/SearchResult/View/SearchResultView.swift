@@ -16,7 +16,7 @@ struct SearchResultView: View {
         NavigationStack {
             switch model.state {
             case .idle:
-                Color.clear.onAppear(perform: loadSearchResult)
+                makeIdleView()
             case .loading:
                 ProgressView()
             case .failed(let error):
@@ -33,6 +33,14 @@ struct SearchResultView: View {
 // MARK: - Private methods
 
 private extension SearchResultView {
+
+    func makeIdleView() -> some View {
+        Color.clear
+            .task {
+                await model.fetchSearchResult()
+            }
+    }
+
     func makeLoadedView() -> some View {
         return List {
             ForEach(model.searchResult, id: \.imdbID) { movie in
@@ -40,8 +48,8 @@ private extension SearchResultView {
                     MovieDetailsView(model: MovieDetailsViewModel(movieModel: movie))
                 } label: {
                     MovieItemView(model: movie)
-                        .onAppear() {
-                            loadMoreSearchResult(movie: movie)
+                        .task {
+                            await model.loadSearchResult(currentItem: movie)
                         }
                 }
             }
@@ -72,12 +80,6 @@ private extension SearchResultView {
     func loadSearchResult() {
         Task {
             await model.fetchSearchResult()
-        }
-    }
-    
-    func loadMoreSearchResult(movie: MovieModel) {
-        Task {
-            await model.loadSearchResult(currentItem: movie)
         }
     }
 }

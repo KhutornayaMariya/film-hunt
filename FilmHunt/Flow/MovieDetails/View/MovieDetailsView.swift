@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct MovieDetailsView: View {
-    
+
     let model: MovieDetailsViewModel
-    
+
     var body: some View {
         ScrollView {
             AsyncImage(url: URL(string: model.movieModel.poster)!) { phase in
@@ -26,7 +26,7 @@ struct MovieDetailsView: View {
             }
             .frame(width: 150, height: 200, alignment: .leading)
             .padding(.bottom)
-            
+
             Text(model.movieModel.title)
                 .fontWeight(.bold)
                 .font(.title2)
@@ -60,14 +60,25 @@ struct MovieDetailsView: View {
                     .foregroundColor(.gray)
                     .padding(.bottom, 5)
             }
-            
+
             if !model.movieModel.plot.isEmpty {
                 Divider()
-                
+
                 Text(model.movieModel.plot)
                     .font(.caption)
             }
-            
+
+        }
+        .toolbar(.hidden, for: .tabBar)
+        .toolbar {
+            ToolbarItemGroup(placement: .bottomBar) {
+                Button("New") {
+                    print("Sort")
+                }
+                Button("New new") {
+                    print("Filter")
+                }
+            }
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(model.movieModel.title)

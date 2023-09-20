@@ -12,7 +12,17 @@ struct FilmHuntApp: App {
     
     var body: some Scene {
         WindowGroup {
-            SearchView(model: SearchViewModel())
+            TabView {
+                SearchView(model: SearchViewModel())
+                    .tabItem {
+                        Label("", systemImage: "magnifyingglass")
+                    }
+
+                ProfileView()
+                    .tabItem {
+                        Label("", systemImage: "house")
+                    }
+            }
         }
     }
 }

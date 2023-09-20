@@ -19,7 +19,7 @@ struct SearchView: View {
         NavigationStack {
             switch model.state {
             case .idle:
-                Color.clear.onAppear(perform: loadInitialState)
+                makeIdleView()
             case .loading:
                 ProgressView()
             case .failed(let error):
@@ -35,7 +35,14 @@ struct SearchView: View {
 // MARK: - Private methods
 
 private extension SearchView {
-    
+
+    func makeIdleView() -> some View {
+        Color.clear
+            .task {
+                await model.fetchRecommendations()
+            }
+    }
+
     func makeRecommendationView(_ movies: [MovieModel]) -> some View {
         return List {
             Section("RECOMMENDATIONS_TITLE".localized) {
@@ -60,7 +67,7 @@ private extension SearchView {
     
     func loadInitialState() {
         Task {
-            await model.fetchRecomendations()
+            await model.fetchRecommendations()
         }
     }
 }

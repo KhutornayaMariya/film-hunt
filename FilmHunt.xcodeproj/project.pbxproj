@@ -36,6 +36,7 @@
 		4CB8FDC629CAF476001E766B /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 4CB8FDC529CAF476001E766B /* SDWebImage */; };
 		4CEE84E329C9F53500A4CB51 /* NetworkError+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CEE84E229C9F53500A4CB51 /* NetworkError+Extensions.swift */; };
 		4CFC168B29CB043700DEFD97 /* FilmHunt Network in Frameworks */ = {isa = PBXBuildFile; productRef = 4CFC168A29CB043700DEFD97 /* FilmHunt Network */; };
+		625399862AB9CAD000ABDE6E /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 625399852AB9CAD000ABDE6E /* ProfileView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,6 +87,7 @@
 		4C6FE94329CAEF9B0042AD77 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		4CB8FDC729CB00BD001E766B /* FilmHunt Network */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = "FilmHunt Network"; sourceTree = "<group>"; };
 		4CEE84E229C9F53500A4CB51 /* NetworkError+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkError+Extensions.swift"; sourceTree = "<group>"; };
+		625399852AB9CAD000ABDE6E /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -202,6 +204,7 @@
 		4C291A3C29C4757C003F2127 /* Flow */ = {
 			isa = PBXGroup;
 			children = (
+				625399842AB9CABB00ABDE6E /* Profile */,
 				4C291A4729C4770D003F2127 /* Search */,
 				4C6972CE29C851A2008E72F1 /* SearchResult */,
 				4C291A4829C47729003F2127 /* MovieDetails */,
@@ -335,6 +338,14 @@
 				4CB8FDC729CB00BD001E766B /* FilmHunt Network */,
 			);
 			name = Packages;
+			sourceTree = "<group>";
+		};
+		625399842AB9CABB00ABDE6E /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				625399852AB9CAD000ABDE6E /* ProfileView.swift */,
+			);
+			path = Profile;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -497,6 +508,7 @@
 				4CEE84E329C9F53500A4CB51 /* NetworkError+Extensions.swift in Sources */,
 				4C291A5529C4A269003F2127 /* SearchView.swift in Sources */,
 				4C291A5229C4A150003F2127 /* SearchViewModel.swift in Sources */,
+				625399862AB9CAD000ABDE6E /* ProfileView.swift in Sources */,
 				4C291A0229C393F0003F2127 /* FilmHuntApp.swift in Sources */,
 				4C291A4129C475B7003F2127 /* NetworkConnectionErrorView.swift in Sources */,
 			);
