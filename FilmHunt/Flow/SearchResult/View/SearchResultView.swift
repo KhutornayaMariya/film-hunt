@@ -11,6 +11,8 @@ import FilmHunt_Network
 struct SearchResultView: View {
     
     @ObservedObject var model: SearchResultViewModel
+    @State var releaseYearRange: ReleaseYearRange = .init(startYear: 0, endYear: 0)
+    @State var isFiltered: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -27,20 +29,24 @@ struct SearchResultView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(model.navigationTitle)
+        .onChange(of: releaseYearRange) { newValue in
+            model.filters = releaseYearRange
+            isFiltered = true
+        }
     }
 }
 
 // MARK: - Private methods
 
 private extension SearchResultView {
-
+    
     func makeIdleView() -> some View {
         Color.clear
             .task {
                 await model.fetchSearchResult()
             }
     }
-
+    
     func makeLoadedView() -> some View {
         return List {
             ForEach(model.searchResult, id: \.imdbID) { movie in
@@ -49,8 +55,27 @@ private extension SearchResultView {
                 } label: {
                     MovieItemView(model: movie)
                         .task {
-                            await model.loadSearchResult(currentItem: movie)
+                            if !isFiltered {
+                                await model.loadSearchResult(currentItem: movie)
+                            }
                         }
+                }
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                NavigationLink(destination: FiltersView(selectedStartYear: $releaseYearRange.startYear, selectedEndYear: $releaseYearRange.endYear)) {
+                    Text("FILTERS".localized)
+                        .font(.system(size: 17, weight: .medium, design: .default))
+                        .foregroundColor(.primary)
+                        .padding(.horizontal, 15)
+                        .frame(height: 34)
+                        .padding(.vertical, 5)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .strokeBorder(.black, lineWidth: 1)
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
             }
         }
