@@ -7,6 +7,12 @@
 
 import Foundation
 import FilmHunt_Network
+import Combine
+
+struct ReleaseYearRange: Equatable {
+    var startYear: Int
+    var endYear: Int
+}
 
 final class SearchResultViewModel: ObservableObject {
     
@@ -24,6 +30,8 @@ final class SearchResultViewModel: ObservableObject {
     @Published private(set) var state = State.idle
     @Published private(set) var searchResult: [MovieModel] = []
     @Published private(set) var isPaginating: Bool = false
+    @Published var filters: ReleaseYearRange
+    
     lazy var navigationTitle = {
         "\("SEARCH".localized): \(query)"
     }()
@@ -34,12 +42,14 @@ final class SearchResultViewModel: ObservableObject {
     
     private var totalPages: Int = 0
     private var currentPage: Int = 1
-    
+    private var subscriptions = Set<AnyCancellable>()
     
     init(query: String) {
         self.query = query
         self.repository = SearchResultRepository()
         self.movieModelFactory = MovieModelFactory()
+        self.filters = .init(startYear: 0, endYear: 0)
+        bindModel()
     }
     
     private func calculateTotalPages(for result: String) {
@@ -49,10 +59,32 @@ final class SearchResultViewModel: ObservableObject {
             self.totalPages = 0
         }
     }
+    
+    private func bindModel() {
+        $filters
+            .sink(receiveValue: { [weak self] filters in
+                self?.applyFilters(filters)
+            })
+            .store(in: &subscriptions)
+    }
+    
+    private func applyFilters(_ filters: ReleaseYearRange) {
+        guard filters.endYear >= filters.startYear,
+        (filters.endYear != 0 || filters.startYear != 0)
+        else { return }
+        searchResult = searchResult.filter { movie in
+            if let year = Int(movie.year) {
+                return year >= filters.startYear && year <= filters.endYear
+            }
+            return false
+        }
+        if searchResult.isEmpty {
+            state = .failed(.emptyResult)
+        }
+    }
 }
 
 extension SearchResultViewModel {
-    
     @MainActor
     func fetchSearchResult() async {
         if !isPaginating {
@@ -73,6 +105,7 @@ extension SearchResultViewModel {
                     movies.append(movieModelFactory.createMovieModel(for: result))
                 }
                 self.searchResult.append(contentsOf: movies)
+                
                 if !isPaginating {
                     state = .loaded
                 } else {
@@ -89,7 +122,9 @@ extension SearchResultViewModel {
     func loadSearchResult(currentItem item: MovieModel) async {
         let thresholdIndex = searchResult.index(searchResult.endIndex, offsetBy: -1)
         let itemIndex = searchResult.firstIndex { $0.imdbID == item.imdbID }
-        if thresholdIndex == itemIndex,(currentPage + 1) <= totalPages {
+        if thresholdIndex == itemIndex,
+           (currentPage + 1) <= totalPages
+        {
             isPaginating = true
             currentPage += 1
             await fetchSearchResult()

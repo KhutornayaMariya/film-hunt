@@ -15,6 +15,7 @@
 "SEARCH" = "Search";
 "REFRESH" = "Refresh";
 "ACTORS" = "Actors";
+"FILTERS" = "Filters";
 
 "KILO" = "K";
 "MIN" = "min";
@@ -22,3 +23,6 @@
 
 "SEARCH_TITLE" = "Find the best";
 "SEARCH_PLACEHOLDER" = "Movies, series...";
+
+//Filters
+"YEAR_OF_RELEASE" = "Year of release";
