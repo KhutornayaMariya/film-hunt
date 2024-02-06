@@ -11,8 +11,8 @@ struct Filters {
     var releaseYear: ReleaseYearRange
     
     struct ReleaseYearRange {
-        var startYears: [Int]
-        var endYears: [Int]
+//        var startYears: [Int]
+//        var endYears: [Int]
 
         var startYear: Int
         var endYear: Int
@@ -20,8 +20,9 @@ struct Filters {
 }
 
 struct FiltersView: View {
-    @Binding var selectedStartYear: Int
-    @Binding var selectedEndYear: Int
+//    @Binding var selectedStartYear: Int
+//    @Binding var selectedEndYear: Int
+    @Binding var releaseRange: ReleaseYearRange
 
     @State private var isSheetPresented = false
     @State private var yearOfRelease: String = "Any"
@@ -38,7 +39,7 @@ struct FiltersView: View {
                             isSheetPresented.toggle()
                         }
                         .sheet(isPresented: $isSheetPresented) {
-                            DoublePickerView(selectedFirstComponent: $selectedStartYear, selectedSecondComponent: $selectedEndYear, firstComponentOptions: firstComponentOptions, secondComponentOptions: secondComponentOptions)
+                            DoublePickerView(selectedFirstComponent: $releaseRange.startYear, selectedSecondComponent: $releaseRange.endYear, firstComponentOptions: firstComponentOptions, secondComponentOptions: secondComponentOptions)
                                 .presentationDetents([.fraction(0.3)])
                         }
                         Spacer()
@@ -49,24 +50,28 @@ struct FiltersView: View {
             }
             .navigationTitle("FILTERS".localized)
         }
+        .onDisappear {
+            
+        }
     }
     
     private func yearsTextValue() -> String {
 
-        if selectedStartYear == 0, selectedEndYear != 0 {
-            return "to \(selectedEndYear)"
-        } else if selectedStartYear != 0, selectedEndYear == 0 {
-            return "since \(selectedStartYear)"
-        } else if selectedStartYear == 0, selectedEndYear == 0 {
-            return "Any"
-        }
-        
-        return "\(selectedStartYear) - \(selectedEndYear)"
+//        if selectedStartYear == 0, selectedEndYear != 0 {
+//            return "to \(selectedEndYear)"
+//        } else if selectedStartYear != 0, selectedEndYear == 0 {
+//            return "since \(selectedStartYear)"
+//        } else if selectedStartYear == 0, selectedEndYear == 0 {
+//            return "Any"
+//        }
+//
+//        return "\(selectedStartYear) - \(selectedEndYear)"
+        return String(releaseRange.startYear)
     }
 }
 
 struct FiltersView_Previews: PreviewProvider {
     static var previews: some View {
-        FiltersView(selectedStartYear: .constant(0), selectedEndYear: .constant(0))
+        FiltersView(releaseRange: .constant(ReleaseYearRange(startYear: 0, endYear: 0)))
     }
 }

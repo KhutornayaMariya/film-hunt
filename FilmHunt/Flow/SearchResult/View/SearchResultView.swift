@@ -11,7 +11,6 @@ import FilmHunt_Network
 struct SearchResultView: View {
     
     @ObservedObject var model: SearchResultViewModel
-    @State var releaseYearRange: ReleaseYearRange = .init(startYear: 0, endYear: 0)
     @State var isFiltered: Bool = false
     
     var body: some View {
@@ -29,8 +28,8 @@ struct SearchResultView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(model.navigationTitle)
-        .onChange(of: releaseYearRange) { newValue in
-            model.filters = releaseYearRange
+        .onChange(of: model.filters) { newValue in
+            model.filters = newValue
             isFiltered = true
         }
     }
@@ -64,7 +63,7 @@ private extension SearchResultView {
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                NavigationLink(destination: FiltersView(selectedStartYear: $releaseYearRange.startYear, selectedEndYear: $releaseYearRange.endYear)) {
+                NavigationLink(destination: FiltersView(releaseRange: $model.filters)) {
                     Text("FILTERS".localized)
                         .font(.system(size: 17, weight: .medium, design: .default))
                         .foregroundColor(.primary)

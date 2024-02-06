@@ -30,8 +30,7 @@ final class SearchResultViewModel: ObservableObject {
     @Published private(set) var state = State.idle
     @Published private(set) var searchResult: [MovieModel] = []
     @Published private(set) var isPaginating: Bool = false
-    
-    @Published var filters: ReleaseYearRange?
+    @Published var filters: ReleaseYearRange
     
     lazy var navigationTitle = {
         "\("SEARCH".localized): \(query)"
@@ -49,7 +48,7 @@ final class SearchResultViewModel: ObservableObject {
         self.query = query
         self.repository = SearchResultRepository()
         self.movieModelFactory = MovieModelFactory()
-        
+        self.filters = .init(startYear: 0, endYear: 0)
         bindModel()
     }
     
@@ -64,13 +63,15 @@ final class SearchResultViewModel: ObservableObject {
     private func bindModel() {
         $filters
             .sink(receiveValue: { [weak self] filters in
-                guard let filters else { return }
                 self?.applyFilters(filters)
             })
             .store(in: &subscriptions)
     }
     
     private func applyFilters(_ filters: ReleaseYearRange) {
+        guard filters.endYear >= filters.startYear,
+        (filters.endYear != 0 || filters.startYear != 0)
+        else { return }
         searchResult = searchResult.filter { movie in
             if let year = Int(movie.year) {
                 return year >= filters.startYear && year <= filters.endYear
@@ -84,7 +85,6 @@ final class SearchResultViewModel: ObservableObject {
 }
 
 extension SearchResultViewModel {
-    
     @MainActor
     func fetchSearchResult() async {
         if !isPaginating {
